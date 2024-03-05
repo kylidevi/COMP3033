@@ -29,92 +29,93 @@ function openModal(date) {
 }
 
 function load() {
-  const dt = new Date();
+	const dt = new Date();
 
-  if (nav !== 0) {
-    dt.setMonth(new Date().getMonth() + nav);
-  }
+  	if (nav !== 0) {
+    	dt.setMonth(new Date().getMonth() + nav);
+  	}
 
-  const day = dt.getDate();
-  const month = dt.getMonth();
-  const year = dt.getFullYear();
+  	const day = dt.getDate();
+  	const month = dt.getMonth();
+  	const year = dt.getFullYear();
 
-  const firstDayOfMonth = new Date(year, month, 1);
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  
-  const dateString = firstDayOfMonth.toLocaleDateString('en-us', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-  });
-  const paddingDays = weekdays.indexOf(dateString.split(', ')[0]);
+  	const firstDayOfMonth = new Date(year, month, 1);
+  	const daysInMonth = new Date(year, month + 1, 0).getDate();
+	
+  	const dateString = firstDayOfMonth.toLocaleDateString('en-us', {
+  	  weekday: 'long',
+  	  year: 'numeric',
+  	  month: 'numeric',
+  	  day: 'numeric',
+  	});
+  	const paddingDays = weekdays.indexOf(dateString.split(', ')[0]);
 
-  document.getElementById('monthDisplay').innerText = 
-    `${dt.toLocaleDateString('en-us', { month: 'long' })} ${year}`;
+  	document.getElementById('monthDisplay').innerText = 
+  		`${dt.toLocaleDateString('en-us', { month: 'long' })} ${year}`;
 
-  calendar.innerHTML = '';
+  	calendar.innerHTML = '';
 
-  for(let i = 1; i <= paddingDays + daysInMonth; i++) {
-    const daySquare = document.createElement('div');
-    daySquare.classList.add('day');
+  	for(let i = 1; i <= paddingDays + daysInMonth; i++) {
+  	  	const daySquare = document.createElement('div');
+  	  	daySquare.classList.add('day');
 
-    const dayString = `${month + 1}/${i - paddingDays}/${year}`;
+  	  	const dayString = `${month + 1}/${i - paddingDays}/${year}`;
 
-    if (i > paddingDays) {
-      daySquare.innerText = i - paddingDays;
-      const eventForDay = events.find(e => e.date === dayString);
+  	  	if (i > paddingDays) {
+  	    	daySquare.innerText = i - paddingDays;
+  	    	const eventForDay = events.find(e => e.date === dayString);
 
-      if (i - paddingDays === day && nav === 0) {
-        daySquare.id = 'currentDay';
-      }
+  	    	if (i - paddingDays === day && nav === 0) {
+  	      	daySquare.id = 'currentDay';
+  	    	}
 
-      if (eventForDay) {
-        const eventDiv = document.createElement('div');
-        eventDiv.classList.add('event');
-        eventDiv.innerText = eventForDay.title;
-        daySquare.appendChild(eventDiv);
-      }
+  	    	if (eventForDay) {
+  	      		const eventDiv = document.createElement('div');
+  	      		eventDiv.classList.add('event');
+  	      		eventDiv.innerText = eventForDay.title;
+  	      		daySquare.appendChild(eventDiv);
+  	    	}
 
-      daySquare.addEventListener('click', () => openModal(dayString));
-    } else {
-      daySquare.classList.add('padding');
-    }
+  	    	daySquare.addEventListener('click', () => openModal(dayString));
+  	  	} 
+		else {
+  	    	daySquare.classList.add('padding');
+  		}	
 
-    calendar.appendChild(daySquare);    
-  }
-}
+	calendar.appendChild(daySquare);    
+  	}
+}	
 
 function closeModal() {
-  eventTitleInput.classList.remove('error');
-  newEventModal.style.display = 'none';
-  deleteEventModal.style.display = 'none';
-  backDrop.style.display = 'none';
-  eventTitleInput.value = '';
-  clicked = null;
-  load();
+  	eventTitleInput.classList.remove('error');
+  	newEventModal.style.display = 'none';
+  	deleteEventModal.style.display = 'none';
+  	backDrop.style.display = 'none';
+  	eventTitleInput.value = '';
+  	clicked = null;
+  	load();
 }
 
 function saveEvent() {
-  if (eventTitleInput.value) {
-    eventTitleInput.classList.remove('error');
+	if (eventTitleInput.value) {
+    	eventTitleInput.classList.remove('error');
 
     events.push({
-      date: clicked,
-      title: eventTitleInput.value,
+      	date: clicked,
+      		title: eventTitleInput.value,
     });
 
     localStorage.setItem('events', JSON.stringify(events));
-    closeModal();
+    	closeModal();
   } else {
     eventTitleInput.classList.add('error');
   }
 }
 
 function deleteEvent() {
-  events = events.filter(e => e.date !== clicked);
-  localStorage.setItem('events', JSON.stringify(events));
-  closeModal();
+  	events = events.filter(e => e.date !== clicked);
+  	localStorage.setItem('events', JSON.stringify(events));
+  	closeModal();
 }
 
 function initButtons() {

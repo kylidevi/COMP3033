@@ -2,13 +2,42 @@
    Authors: Cameron Burgoyne (162210b) and Kylie DeViller (162298d)
    Date: April 5th 2024 */
 
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+:root {
+	--mainBrown: #b29790;
+	--buttonPink: #f6d0cd;
+	--addEvent: #d2e7d6;
+	--eventBeige1: #f5e6d3;
+	--eventBeige2: #eed2c7;
+	--eventBeige3: #edc8b3;
+	--today: #d9eaf1;
+	--highlight: #aec2cd;
+}
+
 body {
-    display: flex;
     margin-top: 50px;
     justify-content: center;
     background-color: #FFFCFF;
-  }
-  button {
+	font-family: 'Poppins' sans-serif;
+}
+
+aside {
+	width: 100%;
+	margin-top: 5%;
+	margin-bottom: 5%;
+	padding-left: 15px;
+	margin-left: 15px;
+	background-color: var(--mainBrown);
+	height: 753px;
+	color: whitesmoke;
+}
+
+aside h4 {
+	padding-top: 3%;
+}
+
+button {
     width: 75px;
     cursor: pointer;
     box-shadow: 0px 0px 2px gray;
@@ -19,36 +48,43 @@ body {
     color: white;
   }
   
-  #header {
+#header {
     padding: 10px;
-    color: #d36c6c;
+    color: var(--mainBrown);
     font-size: 26px;
-    font-family: sans-serif;
     display: flex;
     justify-content: space-between;
-  }
-  #header button {
+}
+
+#header button {
     background-color:#92a1d1;
-  }
-  #container {
+}
+
+#container {
     width: 770px;
-  }
-  #weekdays {
+}
+
+#weekdays {
     width: 100%;
     display: flex;
     color: #247BA0;
-  }
-  #weekdays div {
+	margin-left: 60px;
+}
+  
+#weekdays ul li {
     width: 100px;
     padding: 10px;
-  }
-  #calendar {
+	display: inline-block;
+}
+
+#calendar {
     width: 100%;
-    margin: auto;
+    margin-left: 50px;
     display: flex;
     flex-wrap: wrap;
-  }
-  .day {
+}
+
+.day {
     width: 100px;
     padding: 10px;
     height: 100px;
@@ -60,7 +96,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-  }
+}
   .day:hover {
     background-color: #e8faed;
   }
@@ -117,13 +153,4 @@ body {
   #eventText {
     font-size: 14px;
   }
-  #modalBackDrop {
-    display: none;
-    top: 0px;
-    left: 0px;
-    z-index: 10;
-    width: 100vw;
-    height: 100vh;
-    position: absolute;
-    background-color: rgba(0,0,0,0.8);
-  }
+  
