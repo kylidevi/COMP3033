@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar</title>
+
+    <link rel="stylesheet" href="style.css"/>
+  
+    <!-- calendar integration -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+
+    <?php
+        include('dbcon.php');
+        $query = $conn->query("SELECT * FROM events ORDER BY id");
+    ?>
+
+<script>
+    $(document).ready(function() {
+        var calendar = $('#calendar').fullCalendar({
+            editable:true,
+            header:{
+            left:'prev,next today',
+            center:'title',
+            right:'month,agendaWeek,agendaDay'},
+            events: [<?php while ($row = $query ->fetch_object()) { ?>{ id : '<?php echo $row->id; ?>', title : '<?php echo $row->title; ?>', start : '<?php echo $row->start_event; ?>', end : '<?php echo $row->end_event; ?>', }, <?php } ?>],
+            selectable:true,
+            selectHelper:true,
+
+            select: function(start, end, allDay) {
+                var title = prompt("Enter Event Title");
+                if(title) {
+                    var start = $.fullCalendar.formatDate(start, "Y-MM-DD HH:mm:ss");
+                    var end = $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss");
+                    $.ajax({
+                        url:"insert.php",
+                        type:"POST",
+                        data:{title:title, start:start, end:end},
+                        success:function(data) {
+                            calendar.fullCalendar('refetchEvents');
+                            alert("Added Successfully");
+                            window.location.replace("calendar.php");
+                        }
+                    })
+                }
+            },
+        
+            editable:true,
+            eventResize: function(event) {
+                var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm:ss");
+                var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm:ss");
+                var title = event.title;
+                var id = event.id;
+                $.ajax({
+                    url:"update.php",
+                    type:"POST",
+                    data:{title:title, start:start, end:end, id:id},
+                    success:function(){
+                        calendar.fullCalendar('refetchEvents');
+                        alert('Event Update');
+                    }
+                })
+            },
+        
+            eventDrop: function(event) {
+                var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm:ss");
+                var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm:ss");
+                var title = event.title;
+                var id = event.id;
+                $.ajax({
+                    url:"update.php",
+                    type:"POST",
+                    data:{title:title, start:start, end:end, id:id},
+                    success:function() {
+                        calendar.fullCalendar('refetchEvents');
+                        alert("Event Updated");
+                    }
+                });
+            },
+        
+            eventClick: function(event) {
+                if(confirm("Are you sure you want to remove it?")) {
+                    var id = event.id;
+                    $.ajax({
+                        url:"delete.php",
+                        type:"POST",
+                        data:{id:id},
+                        success:function() {
+                            calendar.fullCalendar('refetchEvents');
+                            alert("Event Removed");
+                        }
+                    })
+                }
+            },
+        });
+    });
+</script>
+</head>
+
+<body>
+    <br>
+    <h2 align="center">Calendar</h2>
+
+    <div class="container">
+        <div id="calendar"></div>
+    </div>
+</body>
+</html>
