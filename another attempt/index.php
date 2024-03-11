@@ -47,7 +47,7 @@
                         success:function(data) {
                             calendar.fullCalendar('refetchEvents');
                             alert("Added Successfully");
-                            window.location.replace("calendar.php");
+                            window.location.replace("index.php");
                         }
                     })
                 }
@@ -96,6 +96,7 @@
                         success:function() {
                             calendar.fullCalendar('refetchEvents');
                             alert("Event Removed");
+                            window.location.replace("index.php");
                         }
                     })
                 }

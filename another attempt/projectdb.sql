@@ -5,8 +5,8 @@ USE projectdb;
 CREATE TABLE IF NOT EXISTS events (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    start_time DATETIME NOT NULL,
-    end_time DATETIME NOT NULL
+    start_event DATETIME NOT NULL,
+    end_event DATETIME NOT NULL
 );
 
 CREATE USER IF NOT EXISTS 'project_user'@'localhost' IDENTIFIED BY 'passw0rd';
