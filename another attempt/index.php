@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendar</title>
-
-    <link rel="stylesheet" href="style.css"/>
   
     <!-- calendar integration -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -17,6 +15,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+
+    <link rel="stylesheet" href="style.css"/>
 
     <?php
         include('dbcon.php');
@@ -66,6 +66,7 @@
                     success:function(){
                         calendar.fullCalendar('refetchEvents');
                         alert('Event Update');
+                        window.location.replace("index.php");
                     }
                 })
             },
@@ -82,6 +83,7 @@
                     success:function() {
                         calendar.fullCalendar('refetchEvents');
                         alert("Event Updated");
+                        window.location.replace("index.php");
                     }
                 });
             },
@@ -108,10 +110,26 @@
 
 <body>
     <br>
-    <h2 align="center">Calendar</h2>
-
     <div class="container">
-        <div id="calendar"></div>
+        <div class="row">
+            <div class="col-3">
+                <aside>
+                    <!-- Task and Reminders side section -->
+                    <div class="container">
+                        <div class="row">
+                            <h2>Tasks</h2>
+                        </div>
+                        <div class="row">
+                            <h2>Reminder</h2>
+                        </div>
+                    </div>
+                </aside>          
+            </div>
+            <div class="col-9">
+                <!-- Calendar Integration -->
+                <div id="calendar"></div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
