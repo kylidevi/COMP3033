@@ -20,7 +20,8 @@
 
     <?php
         include('dbcon.php');
-        $query = $conn->query("SELECT * FROM events ORDER BY id");
+        $query1 = $conn->query("SELECT * FROM events ORDER BY id");
+        $query2 = $conn->query("SELECT * FROM tasks ORDER BY id");
     ?>
 
 <script>
@@ -31,25 +32,39 @@
             left:'prev,next today',
             center:'title',
             right:'month,agendaWeek,agendaDay'},
-            events: [<?php while ($row = $query ->fetch_object()) { ?>{ id : '<?php echo $row->id; ?>', title : '<?php echo $row->title; ?>', start : '<?php echo $row->start_event; ?>', end : '<?php echo $row->end_event; ?>', }, <?php } ?>],
+            events: [<?php while ($row = $query1 ->fetch_object()) { ?>{ id : '<?php echo $row->id; ?>', title : '<?php echo $row->title; ?>', start : '<?php echo $row->start_event; ?>', end : '<?php echo $row->end_event; ?>', }, <?php } ?>],
             selectable:true,
             selectHelper:true,
 
-            select: function(start, end, allDay) {
+            select: function(start, end, alDay) {
                 var title = prompt("Enter Event Title");
-                if(title) {
-                    var start = $.fullCalendar.formatDate(start, "Y-MM-DD HH:mm:ss");
-                    var end = $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss");
-                    $.ajax({
-                        url:"insert.php",
-                        type:"POST",
-                        data:{title:title, start:start, end:end},
-                        success:function(data) {
-                            calendar.fullCalendar('refetchEvents');
-                            alert("Added Successfully");
-                            window.location.replace("index.php");
-                        }
-                    })
+                var startTime = prompt("Enter Start Time (HH:mm)");
+                var endTime = prompt("Enter End Time (HH:mm)");
+                
+                if(title && startTime && endTime) {
+                    var startDateTime = moment(start.format("YYYY-MM-DD") + " " + startTime, "YYYY-MM-DD HH:mm");
+                    var endDateTime = moment(end.format("YYYY-MM-DD") + " " + endTime, "YYYY-MM-DD HH:mm");
+                
+                    if(startDateTime.isValid() && endDateTime.isValid()) {
+                        var eventData = {
+                            title: title,
+                            start: startDateTime.format("YYYY-MM-DD HH:mm:ss"),
+                            end: endDateTime.format("YYYY-MM-DD HH:mm:ss")
+                        };
+                    
+                        $.ajax({
+                            url:"insert.php",
+                            type:"POST",
+                            data:eventData,
+                            success:function(data) {
+                                calendar.fullCalendar('refetchEvents');
+                                alert("Added Successfully");
+                                window.location.replace("index.php");
+                            }
+                        });
+                    } else {
+                        alert("Invalid date/time format. Please enter in HH:mm format.");
+                    }
                 }
             },
         
@@ -105,6 +120,32 @@
             },
         });
     });
+    
+    function newElement() {
+        var li = document.createElement("li");
+        var inputValue = document.getElementById("myInput").value;
+        var t = document.createTextNode(inputValue);
+        li.appendChild(t);
+        if (inputValue === '') {
+            alert("You must write something!");
+        } else {
+            document.getElementById("myUL").appendChild(li);
+        }
+        document.getElementById("myInput").value = "";
+
+        var span = document.createElement("SPAN");
+        var txt = document.createTextNode("\u00D7");
+        span.className = "close";
+        span.appendChild(txt);
+        li.appendChild(span);
+
+        for (i = 0; i < close.length; i++) {
+            close[i].onclick = function() {
+            var div = this.parentElement;
+            div.style.display = "none";
+            }
+        }
+    }
 </script>
 </head>
 
@@ -120,7 +161,29 @@
                             <h2>Tasks</h2>
                         </div>
                         <div class="row">
-                            <h2>Reminder</h2>
+                            <div class="col-8">
+                                <input type="text" id="myInput" placeholder="New task">
+                            </div>
+                            <div class="col">
+                                <button onclick="newElement()" class="addBtn">Add</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                                <ul id="myUL"></ul>
+                        </div>
+                        <div class="row">
+                            <h2>Reminders</h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-8">
+                                <input type="text" id="myInput" placeholder="New task">
+                            </div>
+                            <div class="col">
+                                <button onclick="newElement()" class="addBtn">Add</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                                <ul id="myUL"></ul>
                         </div>
                     </div>
                 </aside>          
